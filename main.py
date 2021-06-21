@@ -7,9 +7,9 @@ import sys
 
 images  = [] 
 
-
 def scan(fname, dname):
     imageInfos = []
+    images = []
     
     fpath = os.path.join(dname, fname)
     imageInfo = {
@@ -25,12 +25,15 @@ def scan(fname, dname):
         imageInfo.update(type="d")
         imageInfos.append(imageInfo)
         for fname in os.listdir(fpath):
-            imageInfos.extend(scan(fpath, fname))
+            imageInfos.extend(scan(fname, fpath))
     # filetype file and is image
-    if os.path.isfile(fpath) and str(fpath)[-4:].lower() == ".jpg":
+    print(str(fpath)[-4:].lower())
+    if os.path.isfile(fpath) and str(fpath)[-4:].lower() == ".jpg" or str(fpath)[-4:].lower() == ".png" :
+        print("imagefound")
         imageInfo.update(type="f")
         with open(fpath, "rb") as f:
             bytes = f.read()  # read entire file as bytes
+            images.append(imageInfo)
     return imageInfos
 
 
@@ -41,15 +44,12 @@ def show(images):
     return res
 
 
-def resize(images, fname):
-    print(images)
+def resize(images):
     for image in images:
         with open(images, 'rb') as f:
             with Image.open(f) as image:
                 new_image = image.resize((400, 400))
-                new_image.save(fname)
-                print(fname)
-
+                new_image.save(image)
 
 if __name__ == '__main__':
     # Handle the options and args
