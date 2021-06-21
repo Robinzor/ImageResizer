@@ -1,8 +1,6 @@
 
-import Image
-
+from PIL import Image
 import os
-import stat
 import getopt
 import sys
 
@@ -24,7 +22,8 @@ def scan(fname, dname):
         for fname in os.listdir(fpath):
             imageInfos.extend(scan(fname, fpath))
     # file is an image
-    if os.path.isfile(fpath) and str(fpath)[-4:].lower() == ".jpg" or str(fpath)[-4:].lower() == ".png" :
+    ext = str(fpath)[-4:].lower()
+    if os.path.isfile(fpath) and ext == ".jpg" or ext == ".jpeg" or ext == ".png" :
         imageInfo.update(type="f")
         imageInfos.append(imageInfo)
     return imageInfos
@@ -35,12 +34,12 @@ def show(imageInfos):
         res.append(image)
     return res
 
-def resize(images):
-    for image in images:
-        with open(images, 'rb') as f:
-            with Image.open(f) as image:
-                new_image = image.resize((400, 400))
-                new_image.save(image+"1")
+def resize(images, fname):
+    with open(images, 'rb') as f:
+        with Image.open(f) as image:
+            new_image = image.resize((400, 400)) 
+            new_image.save(path)
+
 
 if __name__ == '__main__':
     # Handle the options and args
@@ -55,3 +54,6 @@ if __name__ == '__main__':
         infos = show(imageInfos)
         for info in infos:
             print(info)
+            path = info["path"]
+            fname = info["fname"]
+            resize(path, fname)
