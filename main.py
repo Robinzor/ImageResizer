@@ -1,4 +1,5 @@
-from PIL import Image
+
+import Image
 
 import os
 import stat
@@ -9,47 +10,37 @@ images  = []
 
 def scan(fname, dname):
     imageInfos = []
-    images = []
-    
     fpath = os.path.join(dname, fname)
+    sbuf = os.stat(fpath)
     imageInfo = {
             'fname': fname,
-            'dname': dname,
-            'size': "",
-            'height': "",
-            'width': ""
-            }
+            'path':  fpath,
+            'res': "",
+            'size': sbuf.st_size
+    }
 
-   # filetype dir
+   # Scanning all directories
     if os.path.isdir(fpath):
-        imageInfo.update(type="d")
-        imageInfos.append(imageInfo)
         for fname in os.listdir(fpath):
             imageInfos.extend(scan(fname, fpath))
-    # filetype file and is image
-    print(str(fpath)[-4:].lower())
+    # file is an image
     if os.path.isfile(fpath) and str(fpath)[-4:].lower() == ".jpg" or str(fpath)[-4:].lower() == ".png" :
-        print("imagefound")
         imageInfo.update(type="f")
-        with open(fpath, "rb") as f:
-            bytes = f.read()  # read entire file as bytes
-            images.append(imageInfo)
+        imageInfos.append(imageInfo)
     return imageInfos
 
-
-def show(images):
+def show(imageInfos):
     res = []
-    for image in images:
+    for image in imageInfos:
         res.append(image)
     return res
-
 
 def resize(images):
     for image in images:
         with open(images, 'rb') as f:
             with Image.open(f) as image:
                 new_image = image.resize((400, 400))
-                new_image.save(image)
+                new_image.save(image+"1")
 
 if __name__ == '__main__':
     # Handle the options and args
@@ -60,5 +51,7 @@ if __name__ == '__main__':
             sys.exit()
     # Scan and show the file-system trees
     for dname in args:
-        fsInfo = scan(dname, '')
-        infos = resize(images)
+        imageInfos = scan(dname, '')
+        infos = show(imageInfos)
+        for info in infos:
+            print(info)
