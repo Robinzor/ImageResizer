@@ -13,7 +13,6 @@ def scan(fname, dname):
     imageInfo = {
             'fname': fname,
             'path':  fpath,
-            'res': "",
             'size': sbuf.st_size
     }
 
